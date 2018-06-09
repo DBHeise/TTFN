@@ -45,16 +45,16 @@ func init() {
 	flag.StringVar(&keyfile, "key", "", "private key file")
 }
 
-func randInt(min int, max int) uint8 {
-	return uint8(min + rand.Intn(max-min))
+func randInt(min int, max int) int {
+	return min + rand.Intn(max-min)
 }
 func randColor() color.Color {
-	return color.RGBA{randInt(0, 255), randInt(0, 255), randInt(0, 255), 0xFF}
+	return color.RGBA{uint8(randInt(0, 255)), uint8(randInt(0, 255)), uint8(randInt(0, 255)), 0xFF}
 }
 
 func serveImage(basepath string, sepecifcpath string, w *echo.Response) {
-	width := 10
-	height := 10
+	width := randInt(10, 50)
+	height := width
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for x := 0; x < width; x++ {
@@ -62,7 +62,6 @@ func serveImage(basepath string, sepecifcpath string, w *echo.Response) {
 			img.Set(x, y, randColor())
 		}
 	}
-
 	jpeg.Encode(w.Writer, img, nil)
 }
 
